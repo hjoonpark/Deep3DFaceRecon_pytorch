@@ -27,8 +27,9 @@ def cleanup():
 def main(rank, world_size, train_opt):
     val_opt = genvalconf(train_opt, isTrain=False)
     
-    device = torch.device(rank)
-    torch.cuda.set_device(device)
+    # device = torch.device(rank)
+    device ="cpu"
+    # torch.cuda.set_device(device)
     use_ddp = train_opt.use_ddp
     
     if use_ddp:
@@ -37,11 +38,12 @@ def main(rank, world_size, train_opt):
     train_dataset, val_dataset = create_dataset(train_opt, rank=rank), create_dataset(val_opt, rank=rank)
     train_dataset_batches, val_dataset_batches = \
         len(train_dataset) // train_opt.batch_size, len(val_dataset) // val_opt.batch_size
-    
+
     model = create_model(train_opt)   # create a model given train_opt.model and other options
     model.setup(train_opt)
     model.device = device
-    model.parallelize()
+    # model.parallelize()
+    # print("model parallelize()")
 
     if rank == 0:
         print('The batch number of training images = %d\n, \
@@ -60,23 +62,28 @@ def main(rank, world_size, train_opt):
 
     times = []
     for epoch in range(train_opt.epoch_count, train_opt.n_epochs + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
+        print("epoch={}".format(epoch))
+
         epoch_start_time = time.time()  # timer for entire epoch
         iter_data_time = time.time()    # timer for train_data loading per iteration
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
 
         train_dataset.set_epoch(epoch)
         for i, train_data in enumerate(train_dataset):  # inner loop within one epoch
+            print("  i={}".format(i))
+
             iter_start_time = time.time()  # timer for computation per iteration
             if total_iters % train_opt.print_freq == 0:
                 t_data = iter_start_time - iter_data_time
             total_iters += batch_size
             epoch_iter += batch_size
 
-            torch.cuda.synchronize()
+            # torch.cuda.synchronize()
             optimize_start_time = time.time()
 
             model.set_input(train_data)  # unpack train_data from dataset and apply preprocessing
             model.optimize_parameters()   # calculate loss functions, get gradients, update network weights
+            assert False, "="*100
 
             torch.cuda.synchronize()
             optimize_time = (time.time() - optimize_start_time) / batch_size * 0.005 + 0.995 * optimize_time
@@ -140,7 +147,7 @@ def main(rank, world_size, train_opt):
                 dist.barrier()
             
             iter_data_time = time.time()
-
+        assert False, "Stop"
         print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, train_opt.n_epochs, time.time() - epoch_start_time))
         model.update_learning_rate()                     # update learning rates at the end of every epoch.
         
@@ -159,7 +166,7 @@ if __name__ == '__main__':
     
     train_opt = TrainOptions().parse()   # get training options
     world_size = train_opt.world_size               
-
+    print("world_size:", world_size, "train_opt.use_ddp:", train_opt.use_ddp)
     if train_opt.use_ddp:
         mp.spawn(main, args=(world_size, train_opt), nprocs=world_size, join=True)
     else:

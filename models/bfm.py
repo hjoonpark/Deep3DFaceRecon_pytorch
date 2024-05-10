@@ -95,6 +95,7 @@ class ParametricFaceModel:
         batch_size = id_coeff.shape[0]
         id_part = torch.einsum('ij,aj->ai', self.id_base, id_coeff)
         exp_part = torch.einsum('ij,aj->ai', self.exp_base, exp_coeff)
+
         face_shape = id_part + exp_part + self.mean_shape.reshape([1, -1])
         return face_shape.reshape([batch_size, -1, 3])
     
@@ -289,6 +290,13 @@ class ParametricFaceModel:
         face_vertex = self.to_camera(face_shape_transformed)
         
         face_proj = self.to_image(face_vertex)
+        # print("face_proj:", face_proj.shape)
+        # import matplotlib.pyplot as plt
+        # plt.figure()
+        # x = face_proj.detach().numpy().squeeze()
+        # plt.scatter(x[:,0], x[:,1],s=1)
+        # plt.show()
+        # assert 0
         landmark = self.get_landmarks(face_proj)
 
         face_texture = self.compute_texture(coef_dict['tex'])

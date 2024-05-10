@@ -131,13 +131,24 @@ class FaceReconModel(BaseModel):
         self.trans_m = input['M'].to(self.device) if 'M' in input else None
         self.image_paths = input['im_paths'] if 'im_paths' in input else None
 
+        print("_"*100)
+        print("set_input")
+        print("self.input_img:{}".format(self.input_img.shape))
+        print("self.atten_mask:{}".format(self.atten_mask.shape))
+        print("self.gt_lm:{}".format(self.gt_lm.shape))
+        print("self.trans_m:{}".format(self.trans_m.shape))
+        print("self.image_paths:{}".format(self.image_paths))
+        print("_"*100)
+
     def forward(self):
         output_coeff = self.net_recon(self.input_img)
+        n_params = sum(p.numel() for p in self.net_recon.parameters() if p.requires_grad)
+        # print("n_params: {:,}".format(n_params))
+        # print("self.input_img: {}, ({:.1f}, {:.1f})".format(self.input_img.shape, self.input_img.min().item(), self.input_img.max().item()))
+        # print("output_coeff: {}, ({:.1f}, {:.1f})".format(output_coeff.shape, output_coeff.min().item(), output_coeff.max().item()))
         self.facemodel.to(self.device)
-        self.pred_vertex, self.pred_tex, self.pred_color, self.pred_lm = \
-            self.facemodel.compute_for_render(output_coeff)
-        self.pred_mask, _, self.pred_face = self.renderer(
-            self.pred_vertex, self.facemodel.face_buf, feat=self.pred_color)
+        self.pred_vertex, self.pred_tex, self.pred_color, self.pred_lm = self.facemodel.compute_for_render(output_coeff)
+        self.pred_mask, _, self.pred_face = self.renderer(self.pred_vertex, self.facemodel.face_buf, feat=self.pred_color)
         
         self.pred_coeffs_dict = self.facemodel.split_coeff(output_coeff)
 

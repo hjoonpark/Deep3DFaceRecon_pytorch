@@ -1,0 +1,4 @@
+current (v4):
+new default skin material based on Michael's example
+head rig scaled 10x (better to bake the scaling to the rig/geom instead of xform)
+added default lighting and backdrop lookdep elements
