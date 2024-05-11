@@ -35,7 +35,7 @@ class BaseModel(ABC):
         """
         self.opt = opt
         self.isTrain = opt.isTrain
-        self.device = torch.device('cpu') 
+        self.device = torch.device('cuda') 
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)  # save all the checkpoints to save_dir
         self.loss_names = []
         self.model_names = []
@@ -99,7 +99,8 @@ class BaseModel(ABC):
         
         if not self.isTrain or opt.continue_train:
             load_suffix = opt.epoch
-            self.load_networks(load_suffix)
+            print("[JP] IGNORING LOAD_NETWORKS!")
+            # self.load_networks(load_suffix)
  
             
         # self.print_networks(opt.verbose)

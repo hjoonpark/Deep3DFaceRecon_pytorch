@@ -131,14 +131,14 @@ class FaceReconModel(BaseModel):
         self.trans_m = input['M'].to(self.device) if 'M' in input else None
         self.image_paths = input['im_paths'] if 'im_paths' in input else None
 
-        print("_"*100)
-        print("set_input")
-        print("self.input_img:{}".format(self.input_img.shape))
-        print("self.atten_mask:{}".format(self.atten_mask.shape))
-        print("self.gt_lm:{}".format(self.gt_lm.shape))
-        print("self.trans_m:{}".format(self.trans_m.shape))
-        print("self.image_paths:{}".format(self.image_paths))
-        print("_"*100)
+        # print("_"*100)
+        # print("set_input")
+        # print("self.input_img:{}".format(self.input_img.shape))
+        # print("self.atten_mask:{}".format(self.atten_mask.shape))
+        # print("self.gt_lm:{}".format(self.gt_lm.shape))
+        # print("self.trans_m:{}".format(self.trans_m.shape))
+        # print("self.image_paths:{}".format(self.image_paths))
+        # print("_"*100)
 
     def forward(self):
         output_coeff = self.net_recon(self.input_img)
