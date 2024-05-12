@@ -14,6 +14,7 @@ class Mlp(nn.Module):
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
+        print("foward F")
         x = self.fc1(x)
         x = self.act(x)
         x = self.drop(x)
@@ -29,6 +30,7 @@ class VITBatchNorm(nn.Module):
         self.bn = nn.BatchNorm1d(num_features=num_features)
 
     def forward(self, x):
+        print("foward D")
         return self.bn(x)
 
 
@@ -52,6 +54,7 @@ class Attention(nn.Module):
         self.proj_drop = nn.Dropout(proj_drop)
 
     def forward(self, x):
+        print("foward C")
         
         with torch.cuda.amp.autocast(True):
             batch_size, num_token, embed_dim = x.shape
@@ -105,6 +108,7 @@ class Block(nn.Module):
         self.extra_gflops = (num_heads * patch_n * (dim//num_heads)*patch_n * 2) / (1000**3)
 
     def forward(self, x):
+        print("foward H")
         x = x + self.drop_path(self.attn(self.norm1(x)))
         with torch.cuda.amp.autocast(True):
             x = x + self.drop_path(self.mlp(self.norm2(x)))
@@ -125,6 +129,7 @@ class PatchEmbed(nn.Module):
                               kernel_size=patch_size, stride=patch_size)
 
     def forward(self, x):
+        print("foward G")
         batch_size, channels, height, width = x.shape
         assert height == self.img_size[0] and width == self.img_size[1], \
             f"Input image size ({height}*{width}) doesn't match model ({self.img_size[0]}*{self.img_size[1]})."
@@ -251,6 +256,7 @@ class VisionTransformer(nn.Module):
         return x_masked, mask, ids_restore
 
     def forward_features(self, x):
+        print("foward I")
         B = x.shape[0]
         x = self.patch_embed(x)
         x = x + self.pos_embed
@@ -275,6 +281,7 @@ class VisionTransformer(nn.Module):
         return torch.reshape(x, (B, self.num_patches * self.embed_dim))
 
     def forward(self, x):
+        print("foward J")
         x = self.forward_features(x)
         x = self.feature(x)
         return x

@@ -290,13 +290,6 @@ class ParametricFaceModel:
         face_vertex = self.to_camera(face_shape_transformed)
         
         face_proj = self.to_image(face_vertex)
-        # print("face_proj:", face_proj.shape)
-        # import matplotlib.pyplot as plt
-        # plt.figure()
-        # x = face_proj.detach().numpy().squeeze()
-        # plt.scatter(x[:,0], x[:,1],s=1)
-        # plt.show()
-        # assert 0
         landmark = self.get_landmarks(face_proj)
 
         face_texture = self.compute_texture(coef_dict['tex'])

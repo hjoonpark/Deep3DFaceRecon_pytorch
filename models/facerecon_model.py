@@ -10,10 +10,11 @@ from .losses import perceptual_loss, photo_loss, reg_loss, reflectance_loss, lan
 from util import util 
 from util.nvdiffrast import MeshRenderer
 from util.preprocess import estimate_norm_torch
+import inspect
 
 import trimesh
 from scipy.io import savemat
-
+import matplotlib.pyplot as plt 
 class FaceReconModel(BaseModel):
 
     @staticmethod
@@ -131,48 +132,46 @@ class FaceReconModel(BaseModel):
         self.trans_m = input['M'].to(self.device) if 'M' in input else None
         self.image_paths = input['im_paths'] if 'im_paths' in input else None
 
-        # print("_"*100)
-        # print("set_input")
-        # print("self.input_img:{}".format(self.input_img.shape))
-        # print("self.atten_mask:{}".format(self.atten_mask.shape))
-        # print("self.gt_lm:{}".format(self.gt_lm.shape))
-        # print("self.trans_m:{}".format(self.trans_m.shape))
-        # print("self.image_paths:{}".format(self.image_paths))
-        # print("_"*100)
-
     def forward(self):
         output_coeff = self.net_recon(self.input_img)
-        n_params = sum(p.numel() for p in self.net_recon.parameters() if p.requires_grad)
-        # print("n_params: {:,}".format(n_params))
-        # print("self.input_img: {}, ({:.1f}, {:.1f})".format(self.input_img.shape, self.input_img.min().item(), self.input_img.max().item()))
-        # print("output_coeff: {}, ({:.1f}, {:.1f})".format(output_coeff.shape, output_coeff.min().item(), output_coeff.max().item()))
         self.facemodel.to(self.device)
         self.pred_vertex, self.pred_tex, self.pred_color, self.pred_lm = self.facemodel.compute_for_render(output_coeff)
         self.pred_mask, _, self.pred_face = self.renderer(self.pred_vertex, self.facemodel.face_buf, feat=self.pred_color)
-        
+        # n_params = sum(p.numel() for p in self.renderer.parameters() if p.requires_grad)
+        # print("self.renderer n_params: {:,}".format(n_params))
         self.pred_coeffs_dict = self.facemodel.split_coeff(output_coeff)
-
 
     def compute_losses(self):
         """Calculate losses, gradients, and update network weights; called in every training iteration"""
-
         assert self.net_recog.training == False
         trans_m = self.trans_m
         if not self.opt.use_predef_M:
             trans_m = estimate_norm_torch(self.pred_lm, self.input_img.shape[-2])
 
+        # perceptual loss
         pred_feat = self.net_recog(self.pred_face, trans_m)
         gt_feat = self.net_recog(self.input_img, self.trans_m)
         self.loss_feat = self.opt.w_feat * self.compute_feat_loss(pred_feat, gt_feat)
 
+        # fig = plt.figure(figsize=(10, 5))
+        # ax = fig.add_subplot(1, 2, 1)
+        # ax.imshow(self.input_img.detach().cpu()[0].permute((1,2,0)))
+        # ax.set_title("{} {} ({:.1f}, {:.1f})".format("input_img", self.input_img.shape, self.input_img.min().item(), self.input_img.max().item()))
+        # print('self.pred_face={}, self.input_img:{}'.format(self.pred_face.shape, self.input_img.shape))
+        # print("pred_feat:{}, gt_feat:{}".format(pred_feat.shape, gt_feat.shape))
+        # ax = fig.add_subplot(1, 2, 2)
+        # ax.imshow(self.pred_face.detach().cpu()[0].permute((1,2,0)))
+        # ax.set_title("{} {} ({:.1f}, {:.1f})".format("pred_face", self.pred_face.shape, self.pred_face.min().item(), self.pred_face.max().item()))
+        # plt.tight_layout()
+        # plt.savefig("joon_debug/net_recog.jpg", dpi=150)
+                     
         face_mask = self.pred_mask
         if self.opt.use_crop_face:
             face_mask, _, _ = self.renderer(self.pred_vertex, self.facemodel.front_face_buf)
         
         face_mask = face_mask.detach()
-        self.loss_color = self.opt.w_color * self.comupte_color_loss(
-            self.pred_face, self.input_img, self.atten_mask * face_mask)
-        
+        self.loss_color = self.opt.w_color * self.comupte_color_loss(self.pred_face, self.input_img, self.atten_mask * face_mask)
+
         loss_reg, loss_gamma = self.compute_reg_loss(self.pred_coeffs_dict, self.opt)
         self.loss_reg = self.opt.w_reg * loss_reg
         self.loss_gamma = self.opt.w_gamma * loss_gamma
@@ -186,12 +185,12 @@ class FaceReconModel(BaseModel):
             
 
     def optimize_parameters(self, isTrain=True):
-        self.forward()               
+        self.forward()
         self.compute_losses()
         """Update network weights; it will be called in every training iteration."""
         if isTrain:
             self.optimizer.zero_grad()  
-            self.loss_all.backward()         
+            self.loss_all.backward()
             self.optimizer.step()        
 
     def compute_visuals(self):

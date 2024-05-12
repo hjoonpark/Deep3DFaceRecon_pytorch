@@ -152,7 +152,9 @@ class BaseOptions():
             if os.path.isdir(model_dir):
                 model_pths = [i for i in os.listdir(model_dir) if i.endswith('pth')]
                 if os.path.isdir(model_dir) and len(model_pths) != 0:
-                    opt.continue_train= True
+                    print("[JP] opt.continue_train = False")
+                    opt.continue_train = False
+                    # opt.continue_train= True
         
             # update the latest epoch count
             if opt.continue_train:

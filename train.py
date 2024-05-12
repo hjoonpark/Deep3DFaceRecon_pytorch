@@ -13,6 +13,7 @@ from util.util import genvalconf
 import torch.multiprocessing as mp
 import torch.distributed as dist
 
+import matplotlib.pyplot as plt
 
 def setup(rank, world_size, port):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -25,12 +26,10 @@ def cleanup():
     dist.destroy_process_group()
 
 def main(rank, world_size, train_opt):
-    
     val_opt = genvalconf(train_opt, isTrain=False)
     
-    # device = torch.device(rank)
-    device ="cuda"
-    # torch.cuda.set_device(device)
+    device = torch.device(rank)
+    torch.cuda.set_device(device)
     use_ddp = train_opt.use_ddp
     
     if use_ddp:
@@ -43,9 +42,6 @@ def main(rank, world_size, train_opt):
     model = create_model(train_opt)   # create a model given train_opt.model and other options
     model.setup(train_opt)
     model.parallelize()
-    # model.net_recon = model.net_recon.to(device)
-    # model.facemodel = model.facemodel.to(device)
-    # model.renderer = model.renderer.to(device)
     print("model parallelize()")
 
     if rank == 0:
@@ -64,22 +60,39 @@ def main(rank, world_size, train_opt):
         dist.barrier()
 
     times = []
-    for epoch in range(train_opt.epoch_count, train_opt.n_epochs + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
+    debug_dir = "joon_debug"
+    os.makedirs(debug_dir, exist_ok=1)
 
+    for epoch in range(train_opt.epoch_count, train_opt.n_epochs + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
         epoch_start_time = time.time()  # timer for entire epoch
         iter_data_time = time.time()    # timer for train_data loading per iteration
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
 
-        train_dataset.set_epoch(epoch)
+        train_dataset.set_epoch(epoch)  # for ddp
         for i, train_data in enumerate(train_dataset):  # inner loop within one epoch
-
+            # fig = plt.figure(figsize=(10, 5))
+            # for k, v in train_data.items():
+            #     if torch.is_tensor(v):
+            #         if k == "imgs":
+            #             ax = fig.add_subplot(121)
+            #         elif k == "msks":
+            #             ax = fig.add_subplot(122)
+            #         else:
+            #             continue
+            #         ax.imshow(v.detach().cpu()[0].permute((1,2,0)))
+            #         ax.set_title("{} {} | ({:.1f}, {:.1f})".format(k, v.shape, v.min().item(), v.max().item()))
+            # plt.tight_layout()
+            # save_path = os.path.join(debug_dir, "imgs_msks.jpg")
+            # plt.savefig(save_path, dpi=150)
+            # print(save_path)
+                                
             iter_start_time = time.time()  # timer for computation per iteration
             if total_iters % train_opt.print_freq == 0:
                 t_data = iter_start_time - iter_data_time
             total_iters += batch_size
             epoch_iter += batch_size
 
-            # torch.cuda.synchronize()
+            torch.cuda.synchronize()
             optimize_start_time = time.time()
             model.set_input(train_data)  # unpack train_data from dataset and apply preprocessing
             model.optimize_parameters()   # calculate loss functions, get gradients, update network weights
@@ -146,7 +159,8 @@ def main(rank, world_size, train_opt):
                 dist.barrier()
             
             iter_data_time = time.time()
-        print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, train_opt.n_epochs, time.time() - epoch_start_time))
+        if epoch % 100 == 0:
+            print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, train_opt.n_epochs, time.time() - epoch_start_time))
         model.update_learning_rate()                     # update learning rates at the end of every epoch.
         
         if rank == 0 and epoch % train_opt.save_epoch_freq == 0:              # cache our model every <save_epoch_freq> epochs
@@ -158,13 +172,16 @@ def main(rank, world_size, train_opt):
             dist.barrier()
 
 if __name__ == '__main__':
+    seed = 18
+    torch.manual_seed(seed)
+    np.random.seed(seed)
 
     import warnings
     warnings.filterwarnings("ignore")
     
     train_opt = TrainOptions().parse()   # get training options
-    world_size = train_opt.world_size               
-    print("world_size:", world_size, "train_opt.use_ddp:", train_opt.use_ddp)
+    world_size = train_opt.world_size
+
     if train_opt.use_ddp:
         mp.spawn(main, args=(world_size, train_opt), nprocs=world_size, join=True)
     else:

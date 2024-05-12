@@ -99,11 +99,9 @@ class BaseModel(ABC):
         
         if not self.isTrain or opt.continue_train:
             load_suffix = opt.epoch
-            print("[JP] IGNORING LOAD_NETWORKS!")
-            # self.load_networks(load_suffix)
+            self.load_networks(load_suffix)
  
-            
-        # self.print_networks(opt.verbose)
+        self.print_networks(opt.verbose)
 
     def parallelize(self, convert_sync_batchnorm=True):
         if not self.opt.use_ddp:
@@ -180,7 +178,7 @@ class BaseModel(ABC):
                 scheduler.step()
 
         lr = self.optimizers[0].param_groups[0]['lr']
-        print('learning rate = %.7f' % lr)
+        # print('learning rate = %.7f' % lr)
 
     def get_current_visuals(self):
         """Return visualization images. train.py will display these images with visdom, and save the images to a HTML"""

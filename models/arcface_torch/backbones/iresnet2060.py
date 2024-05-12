@@ -48,6 +48,7 @@ class IBasicBlock(nn.Module):
         self.stride = stride
 
     def forward(self, x):
+        print("foward A")
         identity = x
         out = self.bn1(x)
         out = self.conv1(out)
@@ -149,6 +150,7 @@ class IResNet(nn.Module):
             return func(x)
 
     def forward(self, x):
+        print("foward B")
         with torch.cuda.amp.autocast(self.fp16):
             x = self.conv1(x)
             x = self.bn1(x)

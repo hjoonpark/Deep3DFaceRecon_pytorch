@@ -18,6 +18,10 @@ from typing import Type, Any, Callable, Union, List, Optional
 from .arcface_torch.backbones import get_model
 from kornia.geometry import warp_affine
 
+import inspect
+import matplotlib.pyplot as plt
+
+
 def resize_n_crop(image, M, dsize=112):
     # image: (b, c, h, w)
     # M   :  (b, 2, 3)
@@ -98,9 +102,11 @@ class ReconNetWrapper(nn.Module):
         x = self.backbone(x)
         if not self.use_last_fc:
             output = []
-            for layer in self.final_layers:
-                output.append(layer(x))
-            x = torch.flatten(torch.cat(output, dim=1), 1)
+            for i, layer in enumerate(self.final_layers):
+                x_out = layer(x)
+                output.append(x_out)
+            x_cat = torch.cat(output, dim=1)
+            x = torch.flatten(x_cat, 1)
         return x
 
 
@@ -120,7 +126,8 @@ class RecogNetWrapper(nn.Module):
         
     def forward(self, image, M):
         image = self.preprocess(resize_n_crop(image, M, self.input_size))
-        id_feature = F.normalize(self.net(image), dim=-1, p=2)
+        x = self.net(image)
+        id_feature = F.normalize(x, dim=-1, p=2)
         return id_feature
 
 
@@ -185,6 +192,8 @@ class BasicBlock(nn.Module):
         self.stride = stride
 
     def forward(self, x: Tensor) -> Tensor:
+        print("forward 003 BasicBlock")
+        assert 0
         identity = x
 
         out = self.conv1(x)
@@ -260,7 +269,6 @@ class Bottleneck(nn.Module):
 
         return out
 
-
 class ResNet(nn.Module):
 
     def __init__(
@@ -298,12 +306,9 @@ class ResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2,
-                                       dilate=replace_stride_with_dilation[0])
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2,
-                                       dilate=replace_stride_with_dilation[1])
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2,
-                                       dilate=replace_stride_with_dilation[2])
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0])
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1])
+        self.layer4 = self._make_layer(block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2])
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         
         if self.use_last_fc:
@@ -367,8 +372,15 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         if self.use_last_fc:
+            print("self.use_last_fc", self.use_last_fc)
+            print("  ", x.shape)
             x = torch.flatten(x, 1)
+            print("  ", x.shape)
             x = self.fc(x)
+            n_params = sum(p.numel() for p in self.fc.parameters() if p.requires_grad)
+            print("self.fc n_params: {:,}".format(n_params))
+            print("  ", x.shape)
+            assert 0
         return x
 
     def forward(self, x: Tensor) -> Tensor:

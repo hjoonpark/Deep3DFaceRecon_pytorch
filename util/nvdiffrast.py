@@ -54,7 +54,6 @@ class MeshRenderer(nn.Module):
             vertex = torch.cat([vertex, torch.ones([*vertex.shape[:2], 1]).to(device)], dim=-1)
             vertex[..., 1] = -vertex[..., 1] 
 
-
         vertex_ndc = vertex @ ndc_proj.t()
         if self.ctx is None:
             if self.use_opengl:
