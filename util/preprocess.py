@@ -19,7 +19,6 @@ import warnings
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
 warnings.filterwarnings("ignore", category=FutureWarning) 
 
-
 # calculating least square problem for image alignment
 def POS(xp, x):
     npts = xp.shape[1]
@@ -47,7 +46,6 @@ def POS(xp, x):
 
 # bounding box for 68 landmark detection
 def BBRegression(points, params):
-
     w1 = params['W1']
     b1 = params['B1']
     w2 = params['W2']
@@ -137,7 +135,6 @@ def align_for_lm(img, five_points):
     bbox = np.round(bbox).astype(np.int32)
     crop_img, scale = crop(img, bbox)
     return crop_img, scale, bbox
-
 
 # resize and crop images for face reconstruction
 def resize_n_crop_img(img, lm, t, s, target_size=224., mask=None):

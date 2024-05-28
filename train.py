@@ -40,8 +40,12 @@ def main(rank, world_size, train_opt):
         len(train_dataset) // train_opt.batch_size, len(val_dataset) // val_opt.batch_size
 
     model = create_model(train_opt)   # create a model given train_opt.model and other options
+    print(model.net_recon)
+    n_params = sum(p.numel() for p in model.net_recon.parameters() if p.requires_grad)
+    
     model.setup(train_opt)
     model.parallelize()
+
     print("model parallelize()")
 
     if rank == 0:

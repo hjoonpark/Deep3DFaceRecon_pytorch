@@ -12,6 +12,7 @@ import nvdiffrast.torch as dr
 from scipy.io import loadmat
 from torch import nn
 
+import matplotlib.pyplot as plt
 def ndc_projection(x=0.1, n=1.0, f=50.0):
     return np.array([[n/x,    0,            0,              0],
                      [  0, n/-x,            0,              0],
@@ -28,8 +29,7 @@ class MeshRenderer(nn.Module):
         super(MeshRenderer, self).__init__()
 
         x = np.tan(np.deg2rad(rasterize_fov * 0.5)) * znear
-        self.ndc_proj = torch.tensor(ndc_projection(x=x, n=znear, f=zfar)).matmul(
-                torch.diag(torch.tensor([1., -1, -1, 1])))
+        self.ndc_proj = torch.tensor(ndc_projection(x=x, n=znear, f=zfar)).matmul(torch.diag(torch.tensor([1., -1, -1, 1])))
         self.rasterize_size = rasterize_size
         self.use_opengl = use_opengl
         self.ctx = None
@@ -83,13 +83,13 @@ class MeshRenderer(nn.Module):
         depth = depth.permute(0, 3, 1, 2)
         mask =  (rast_out[..., 3] > 0).float().unsqueeze(1)
         depth = mask * depth
-        
 
+        
         image = None
         if feat is not None:
             image, _ = dr.interpolate(feat, rast_out, tri)
             image = image.permute(0, 3, 1, 2)
             image = mask * image
-        
+
         return mask, depth, image
 

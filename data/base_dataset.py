@@ -90,12 +90,25 @@ def get_affine_mat(opt, size):
     if 'flip' in opt.preprocess:
         flip = random.random() > 0.5
 
-    shift_to_origin = np.array([1, 0, -w//2, 0, 1, -h//2, 0, 0, 1]).reshape([3, 3])
-    flip_mat = np.array([-1 if flip else 1, 0, 0, 0, 1, 0, 0, 0, 1]).reshape([3, 3])
-    shift_mat = np.array([1, 0, shift_x, 0, 1, shift_y, 0, 0, 1]).reshape([3, 3])
-    rot_mat = np.array([np.cos(rot_rad), np.sin(rot_rad), 0, -np.sin(rot_rad), np.cos(rot_rad), 0, 0, 0, 1]).reshape([3, 3])
-    scale_mat = np.array([scale, 0, 0, 0, scale, 0, 0, 0, 1]).reshape([3, 3])
-    shift_to_center = np.array([1, 0, w//2, 0, 1, h//2, 0, 0, 1]).reshape([3, 3])
+    shift_to_origin = np.array([1, 0, -w//2, 
+                                0, 1, -h//2, 
+                                0, 0, 1]).reshape([3, 3])
+    flip_mat = np.array([-1 if flip else \
+                         1, 0, 0, 
+                         0, 1, 0, 
+                         0, 0, 1]).reshape([3, 3])
+    shift_mat = np.array([1, 0, shift_x, 
+                          0, 1, shift_y, 
+                          0, 0, 1]).reshape([3, 3])
+    rot_mat = np.array([np.cos(rot_rad), np.sin(rot_rad), 0, 
+                        -np.sin(rot_rad), np.cos(rot_rad), 0, 
+                        0, 0, 1]).reshape([3, 3])
+    scale_mat = np.array([scale, 0, 0, 
+                          0, scale, 0, 
+                          0, 0, 1]).reshape([3, 3])
+    shift_to_center = np.array([1, 0, w//2, 
+                                0, 1, h//2, 
+                                0, 0, 1]).reshape([3, 3])
     
     affine = shift_to_center @ scale_mat @ rot_mat @ shift_mat @ flip_mat @ shift_to_origin    
     affine_inv = np.linalg.inv(affine)

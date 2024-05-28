@@ -8,6 +8,8 @@ from scipy.io import loadmat
 from util.load_mats import transferBFM09
 import os
 
+import matplotlib.pyplot as plt
+
 def perspective_projection(focal, center):
     # return p.T (N, 3) @ (3, 3) 
     return np.array([
@@ -95,7 +97,6 @@ class ParametricFaceModel:
         batch_size = id_coeff.shape[0]
         id_part = torch.einsum('ij,aj->ai', self.id_base, id_coeff)
         exp_part = torch.einsum('ij,aj->ai', self.exp_base, exp_coeff)
-
         face_shape = id_part + exp_part + self.mean_shape.reshape([1, -1])
         return face_shape.reshape([batch_size, -1, 3])
     
@@ -132,7 +133,7 @@ class ParametricFaceModel:
         face_norm = torch.cross(e1, e2, dim=-1)
         face_norm = F.normalize(face_norm, dim=-1, p=2)
         face_norm = torch.cat([face_norm, torch.zeros(face_norm.shape[0], 1, 3).to(self.device)], dim=1)
-        
+
         vertex_norm = torch.sum(face_norm[:, self.point_buf], dim=2)
         vertex_norm = F.normalize(vertex_norm, dim=-1, p=2)
         return vertex_norm

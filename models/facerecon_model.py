@@ -91,7 +91,7 @@ class FaceReconModel(BaseModel):
         self.net_recon = networks.define_net_recon(
             net_recon=opt.net_recon, use_last_fc=opt.use_last_fc, init_path=opt.init_path
         )
-
+        
         self.facemodel = ParametricFaceModel(
             bfm_folder=opt.bfm_folder, camera_distance=opt.camera_d, focal=opt.focal, center=opt.center,
             is_train=self.isTrain, default_name=opt.bfm_model
@@ -141,6 +141,13 @@ class FaceReconModel(BaseModel):
         # print("self.renderer n_params: {:,}".format(n_params))
         self.pred_coeffs_dict = self.facemodel.split_coeff(output_coeff)
 
+        # print("output_coeff:", output_coeff.shape, output_coeff.min().item(), output_coeff.max().item())
+        # print("self.pred_vertex:", self.pred_vertex.shape, self.pred_vertex.min().item(), self.pred_vertex.max().item())
+        # print("self.pred_color:", self.pred_color.shape, self.pred_color.min().item(), self.pred_color.max().item())
+        # print("self.pred_lm:", self.pred_lm.shape, self.pred_lm.min().item(), self.pred_lm.max().item())
+        # print("self.pred_mask:", self.pred_mask.shape, self.pred_mask.min().item(), self.pred_mask.max().item())
+        # print("self.pred_face:", self.pred_face.shape, self.pred_face.min().item(), self.pred_face.max().item())
+        # print()
     def compute_losses(self):
         """Calculate losses, gradients, and update network weights; called in every training iteration"""
         assert self.net_recog.training == False
