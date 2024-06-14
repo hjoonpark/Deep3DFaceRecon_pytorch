@@ -1,6 +1,6 @@
 """This script defines the face reconstruction model for Deep3DFaceRecon_pytorch
 """
-
+import sys
 import numpy as np
 import torch
 from .base_model import BaseModel
@@ -126,6 +126,7 @@ class FaceReconModel(BaseModel):
         Parameters:
             input: a dictionary that contains the data itself and its metadata information.
         """
+
         self.input_img = input['imgs'].to(self.device) 
         self.atten_mask = input['msks'].to(self.device) if 'msks' in input else None
         self.gt_lm = input['lms'].to(self.device)  if 'lms' in input else None
@@ -141,13 +142,6 @@ class FaceReconModel(BaseModel):
         # print("self.renderer n_params: {:,}".format(n_params))
         self.pred_coeffs_dict = self.facemodel.split_coeff(output_coeff)
 
-        # print("output_coeff:", output_coeff.shape, output_coeff.min().item(), output_coeff.max().item())
-        # print("self.pred_vertex:", self.pred_vertex.shape, self.pred_vertex.min().item(), self.pred_vertex.max().item())
-        # print("self.pred_color:", self.pred_color.shape, self.pred_color.min().item(), self.pred_color.max().item())
-        # print("self.pred_lm:", self.pred_lm.shape, self.pred_lm.min().item(), self.pred_lm.max().item())
-        # print("self.pred_mask:", self.pred_mask.shape, self.pred_mask.min().item(), self.pred_mask.max().item())
-        # print("self.pred_face:", self.pred_face.shape, self.pred_face.min().item(), self.pred_face.max().item())
-        # print()
     def compute_losses(self):
         """Calculate losses, gradients, and update network weights; called in every training iteration"""
         assert self.net_recog.training == False
@@ -177,6 +171,9 @@ class FaceReconModel(BaseModel):
             face_mask, _, _ = self.renderer(self.pred_vertex, self.facemodel.front_face_buf)
         
         face_mask = face_mask.detach()
+        # print()
+        # print('self.pred_face:', self.pred_face.shape, self.pred_face.min(), self.pred_face.max())
+        # print('self.input_img:', self.input_img.shape, self.input_img.min(), self.input_img.max())
         self.loss_color = self.opt.w_color * self.comupte_color_loss(self.pred_face, self.input_img, self.atten_mask * face_mask)
 
         loss_reg, loss_gamma = self.compute_reg_loss(self.pred_coeffs_dict, self.opt)
@@ -204,24 +201,26 @@ class FaceReconModel(BaseModel):
         with torch.no_grad():
             input_img_numpy = 255. * self.input_img.detach().cpu().permute(0, 2, 3, 1).numpy()
             output_vis = self.pred_face * self.pred_mask + (1 - self.pred_mask) * self.input_img
+            print() 
+            print('output_vis:', output_vis.shape, output_vis.min(), output_vis.max())
             output_vis_numpy_raw = 255. * output_vis.detach().cpu().permute(0, 2, 3, 1).numpy()
             
+            print('output_vis_numpy_raw:', output_vis_numpy_raw.shape, output_vis_numpy_raw.min(), output_vis_numpy_raw.max())
+            print() 
             if self.gt_lm is not None:
                 gt_lm_numpy = self.gt_lm.cpu().numpy()
                 pred_lm_numpy = self.pred_lm.detach().cpu().numpy()
                 output_vis_numpy = util.draw_landmarks(output_vis_numpy_raw, gt_lm_numpy, 'b')
                 output_vis_numpy = util.draw_landmarks(output_vis_numpy, pred_lm_numpy, 'r')
             
-                output_vis_numpy = np.concatenate((input_img_numpy, 
-                                    output_vis_numpy_raw, output_vis_numpy), axis=-2)
+                output_vis_numpy = np.concatenate((input_img_numpy, output_vis_numpy_raw, output_vis_numpy), axis=-2)
             else:
-                output_vis_numpy = np.concatenate((input_img_numpy, 
-                                    output_vis_numpy_raw), axis=-2)
+                output_vis_numpy = np.concatenate((input_img_numpy, output_vis_numpy_raw), axis=-2)
 
-            self.output_vis = torch.tensor(
-                    output_vis_numpy / 255., dtype=torch.float32
-                ).permute(0, 3, 1, 2).to(self.device)
-
+            output_vis = output_vis_numpy
+    
+        self.output_vis = torch.tensor(output_vis_numpy / 255., dtype=torch.float32).permute(0, 3, 1, 2).to(self.device)
+    
     def save_mesh(self, name):
 
         recon_shape = self.pred_vertex  # get reconstructed shape

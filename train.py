@@ -14,6 +14,7 @@ import torch.multiprocessing as mp
 import torch.distributed as dist
 
 import matplotlib.pyplot as plt
+from util.plotter import plot_recons
 
 def setup(rank, world_size, port):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -58,38 +59,25 @@ def main(rank, world_size, train_opt):
     t_data = 0
     t_val = 0
     optimize_time = 0.1
-    batch_size = 1 if train_opt.display_per_batch else train_opt.batch_size
+    # batch_size = 1 if train_opt.display_per_batch else train_opt.batch_size
+    batch_size = train_opt.batch_size
 
     if use_ddp:
         dist.barrier()
 
     times = []
-    debug_dir = "joon_debug"
-    os.makedirs(debug_dir, exist_ok=1)
+    # debug_dir = "joon_debug"
+    # os.makedirs(debug_dir, exist_ok=1)
 
+    n_backwards = 0
     for epoch in range(train_opt.epoch_count, train_opt.n_epochs + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
         epoch_start_time = time.time()  # timer for entire epoch
         iter_data_time = time.time()    # timer for train_data loading per iteration
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
 
         train_dataset.set_epoch(epoch)  # for ddp
+        current_loss = 0
         for i, train_data in enumerate(train_dataset):  # inner loop within one epoch
-            # fig = plt.figure(figsize=(10, 5))
-            # for k, v in train_data.items():
-            #     if torch.is_tensor(v):
-            #         if k == "imgs":
-            #             ax = fig.add_subplot(121)
-            #         elif k == "msks":
-            #             ax = fig.add_subplot(122)
-            #         else:
-            #             continue
-            #         ax.imshow(v.detach().cpu()[0].permute((1,2,0)))
-            #         ax.set_title("{} {} | ({:.1f}, {:.1f})".format(k, v.shape, v.min().item(), v.max().item()))
-            # plt.tight_layout()
-            # save_path = os.path.join(debug_dir, "imgs_msks.jpg")
-            # plt.savefig(save_path, dpi=150)
-            # print(save_path)
-                                
             iter_start_time = time.time()  # timer for computation per iteration
             if total_iters % train_opt.print_freq == 0:
                 t_data = iter_start_time - iter_data_time
@@ -100,12 +88,16 @@ def main(rank, world_size, train_opt):
             optimize_start_time = time.time()
             model.set_input(train_data)  # unpack train_data from dataset and apply preprocessing
             model.optimize_parameters()   # calculate loss functions, get gradients, update network weights
+            n_backwards += 1
 
             torch.cuda.synchronize()
             optimize_time = (time.time() - optimize_start_time) / batch_size * 0.005 + 0.995 * optimize_time
 
             if use_ddp:
                 dist.barrier()
+
+            if rank == 0:
+                current_loss += model.loss_all.item() / len(train_dataset) / batch_size
 
             if rank == 0 and (total_iters == batch_size or total_iters % train_opt.display_freq == 0):   # display images on visdom and save images to a HTML file
                 model.compute_visuals()
@@ -117,7 +109,7 @@ def main(rank, world_size, train_opt):
             if rank == 0 and (total_iters == batch_size or total_iters % train_opt.print_freq == 0):    # print training losses and save logging information to the disk
                 losses = model.get_current_losses()
                 visualizer.print_current_losses(epoch, epoch_iter, losses, optimize_time, t_data)
-                visualizer.plot_current_losses(total_iters, losses)
+                # visualizer.plot_current_losses(total_iters, losses)
 
             if total_iters == batch_size or total_iters % train_opt.evaluation_freq == 0:
                 with torch.no_grad():
@@ -128,11 +120,11 @@ def main(rank, world_size, train_opt):
                     for j, val_data in enumerate(val_dataset):
                         model.set_input(val_data)
                         model.optimize_parameters(isTrain=False)
-                        if rank == 0 and j < train_opt.vis_batch_nums:
-                            model.compute_visuals()
-                            visualizer.display_current_results(model.get_current_visuals(), total_iters, epoch,
-                                    dataset='val', save_results=True, count=j * val_opt.batch_size,
-                                    add_image=train_opt.add_image)
+                        # if rank == 0 and j < train_opt.vis_batch_nums:
+                        #     model.compute_visuals()
+                        #     visualizer.display_current_results(model.get_current_visuals(), total_iters, epoch,
+                        #             dataset='val', save_results=True, count=j * val_opt.batch_size,
+                        #             add_image=train_opt.add_image)
 
                         if j < train_opt.eval_batch_nums:
                             losses = model.get_current_losses()
@@ -140,14 +132,14 @@ def main(rank, world_size, train_opt):
                                 losses_avg[key] = losses_avg.get(key, 0) + value
 
                     for key, value in losses_avg.items():
-                        losses_avg[key] = value / min(train_opt.eval_batch_nums, val_dataset_batches)
+                        losses_avg[key] = value / min(train_opt.eval_batch_nums, max(val_dataset_batches, 1))
 
                     torch.cuda.synchronize()
                     eval_time = time.time() - val_start_time
                     
                     if rank == 0:
                         visualizer.print_current_losses(epoch, epoch_iter, losses_avg, eval_time, t_data, dataset='val') # visualize training results
-                        visualizer.plot_current_losses(total_iters, losses_avg, dataset='val')
+                        # visualizer.plot_current_losses(total_iters, losses_avg, dataset='val')
                 model.train()      
 
             if use_ddp:
@@ -167,6 +159,23 @@ def main(rank, world_size, train_opt):
             print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, train_opt.n_epochs, time.time() - epoch_start_time))
         model.update_learning_rate()                     # update learning rates at the end of every epoch.
         
+        d_epoch = (epoch - train_opt.epoch_count)
+        # if (d_epoch % train_opt.display_freq == 0):
+            # Plot training results
+            # output_vis = model.compute_visuals() # (B, H, W, 3)
+            # visualizer.display_current_results(model.get_current_visuals(), n_backwards, epoch, save_results=True, add_image=train_opt.add_image)
+
+            # if False:
+                # suptitle = "Training | Epoch: {}, loss: {:.4f}".format(epoch, current_loss)
+                # titles = [i for i in range(output_vis.shape[0])]
+                # assert len(titles) == output_vis.shape[0]
+                # # save_path = os.path.join(plot_dir, "train/tr_recon.jpg")
+                # plot_dir = "checkpoints/JoonTest/plots"
+                # os.makedirs(plot_dir, exist_ok=True)
+                # save_path = os.path.join(plot_dir, "tr_{:09d}.jpg".format(epoch))
+                # plot_recons(output_vis.astype(np.uint8), save_path, suptitle, titles, n_rows=min(batch_size, 10))
+                # print('[!]', save_path)
+
         if rank == 0 and epoch % train_opt.save_epoch_freq == 0:              # cache our model every <save_epoch_freq> epochs
             print('saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))
             model.save_networks('latest')

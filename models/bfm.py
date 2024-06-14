@@ -49,8 +49,10 @@ class ParametricFaceModel:
         self.exp_base = model['exBase'].astype(np.float32)
         # mean face texture. [3*N,1] (0-255)
         self.mean_tex = model['meantex'].astype(np.float32)
+        # self.mean_tex = np.ones_like(self.mean_tex) * 0.5
         # texture basis. [3*N,80]
         self.tex_base = model['texBase'].astype(np.float32)
+        # self.tex_base = np.ones_like(self.tex_base) * 0.5
         # face indices for each vertex that lies in. starts from 0. [N,8]
         self.point_buf = model['point_buf'].astype(np.int64) - 1
         # vertex indices for each face. starts from 0. [F,3]
@@ -76,7 +78,36 @@ class ParametricFaceModel:
         self.camera_distance = camera_distance
         self.SH = SH()
         self.init_lit = init_lit.reshape([1, 1, -1]).astype(np.float32)
-        
+                
+        # if True:
+        #     def minmax_str(x):
+        #         # x: either (n, 3) or (h, w, 3)
+        #         if len(x.shape) == 2:
+        #             mins = x.min(0)
+        #             maxs = x.max(0)
+        #             out = 'x=({:.03f}, {:.03f}), y=({:.03f}, {:.03f}), z=({:.03f}, {:.03f})'.format(mins[0], maxs[0], mins[1], maxs[1], mins[2], maxs[2])
+        #         elif len(x.shape) == 3:
+        #             mins = x.min(0).min(0)
+        #             maxs = x.max(0).max(0)
+        #             out = 'x=({:.03f}, {:.03f}), y=({:.03f}, {:.03f}), z=({:.03f}, {:.03f})'.format(mins[0], maxs[0], mins[1], maxs[1], mins[2], maxs[2])
+        #         else:
+        #             raise NotImplementedError("Unexpected shape")
+        #         return out
+
+        #     print('---------- unit: 1 = 1cm ---------')
+        #     ms = self.mean_shape.reshape(-1, 3)
+        #     ib = self.id_base.reshape(-1, 3, 80)
+        #     eb = self.exp_base.reshape(-1, 3, 64)
+        #     mt = self.mean_tex
+        #     tb = self.tex_base
+        #     N = 23
+        #     print('      - meanshape    : {}{}| {}'.format(ms.shape, " "*(N-len(str(ms.shape))),minmax_str(ms)))
+        #     print('      - id_base      : {}{}| {}'.format(ib.shape, " "*(N-len(str(ib.shape))),minmax_str(ib)))
+        #     print('  * ex_base: {}{}| ({:.03f}, {:.03f})'.format(eb.shape ," "*(N-len(str(eb.shape))), eb.min(), eb.max()))
+        #     print('  * meantex: {}{}| ({:.03f}, {:.03f})'.format(mt.shape, " "*(N-len(str(mt.shape))),mt.min(), mt.max()))
+        #     print('  * texbase: {}{}| ({:.03f}, {:.03f})'.format(tb.shape, " "*(N-len(str(tb.shape))), tb.min(), tb.max()))
+        #     print()
+        # print()
 
     def to(self, device):
         self.device = device
@@ -149,6 +180,7 @@ class ParametricFaceModel:
             face_norm        -- torch.tensor, size (B, N, 3), rotated face normal
             gamma            -- torch.tensor, size (B, 27), SH coeffs
         """
+        # print('gamma:', gamma.mean().item(), gamma.min().item(), gamma.max().item())
         batch_size = gamma.shape[0]
         v_num = face_texture.shape[1]
         a, c = self.SH.a, self.SH.c
