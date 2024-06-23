@@ -65,13 +65,13 @@ class ParametricFaceModel:
             # vertex indices for pre-defined skin region to compute reflectance loss
             self.skin_mask = np.squeeze(model['skinmask'])
         
-        print('self.front_mask', self.front_mask.shape, self.front_mask.min(), self.front_mask.max())
-        print('self.front_face_buf', self.front_face_buf.shape, self.front_face_buf.min(), self.front_face_buf.max())
-        filepath = 'front_face_buf.obj'
-        writeOBJ(filepath, self.mean_shape.reshape(-1,3), np.zeros_like(self.mean_shape), self.front_face_buf.squeeze(), np.zeros_like(self.front_face_buf))
+        # print('self.front_mask', self.front_mask.shape, self.front_mask.min(), self.front_mask.max())
+        # print('self.front_face_buf', self.front_face_buf.shape, self.front_face_buf.min(), self.front_face_buf.max())
+        # filepath = 'front_face_buf.obj'
+        # writeOBJ(filepath, self.mean_shape.reshape(-1,3), np.zeros_like(self.mean_shape), self.front_face_buf.squeeze(), np.zeros_like(self.front_face_buf))
         
-        print('self.skin_mask', self.skin_mask.shape, self.skin_mask.min(), self.skin_mask.max())
-        assert 0
+        # print('self.skin_mask', self.skin_mask.shape, self.skin_mask.min(), self.skin_mask.max())
+        # assert 0
         if recenter:
             mean_shape = self.mean_shape.reshape([-1, 3])
             mean_shape = mean_shape - np.mean(mean_shape, axis=0, keepdims=True)

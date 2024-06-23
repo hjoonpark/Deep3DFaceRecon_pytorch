@@ -1,7 +1,7 @@
-2024-06-22 21:29:34.264300: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
-2024-06-22 21:29:34.285651: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2024-06-22 22:58:42.516017: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-06-22 22:58:42.537561: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-06-22 21:29:34.947551: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2024-06-22 22:58:43.191867: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 ----------------- Options ---------------
                 add_image: True                          
                batch_size: 16                            	[default: 32]
@@ -11,7 +11,7 @@ To enable the following instructions: AVX2 FMA, in other operations, rebuild Ten
                  camera_d: 10.0                          
                    center: 112.0                         
           checkpoints_dir: ../results/checkpointNetwork_ 	[default: ./checkpoints]
-           continue_train: False                         
+           continue_train: True                          	[default: False]
                 data_root: ./                            
              dataset_mode: flist                         
                  ddp_port: 12355                         
@@ -80,6 +80,9 @@ remove prefix 'module.'
   Used pretrained-model keys:456
 loading pretrained net_recog r50 from /home/joonp/1_Projects/gitlab/ngc/assets/checkpoints_BACKUP/recog_model/ms1mv3_arcface_r50_fp16/backbone.pth
 model [FaceReconModel] was created
+loading the model from ../results/checkpointNetwork_/face_recon/epoch_latest.pth
+loading the optim from ../results/checkpointNetwork_/face_recon/epoch_latest.pth
+loading the sched from ../results/checkpointNetwork_/face_recon/epoch_latest.pth
 The batch number of training images = 625
 ,             the batch number of validation images = -1
 ---------- Networks initialized -------------
@@ -87,13 +90,239 @@ The batch number of training images = 625
 -----------------------------------------------
 n_train_imgs: 10,000 | batch_size: 16 | n_batches: 626 | total_iters: 62,600,000,000,000
 create opengl ctx on device cuda:0
-[2024-06-22 21:29:41s] 00:00:07 n_iters: 1, epoch: 1, n_epoch_iters: 0/626 | all: 2.8211 feat: 0.1954 color: 0.6326 lm: 1.9042 reg: 0.0000 gamma: 0.0000 reflc: 0.0889 
+[2024-06-22 22:58:49s] 00:00:07 n_iters: 1, epoch: 1, n_epoch_iters: 0/626 | all: 18.3754 feat: 0.1951 color: 1.5143 lm: 16.3270 reg: 0.0015 gamma: 0.2666 reflc: 0.0710 
 Train saved: ../results/checkpointNetwork_/face_recon/results/train/e1_0000000001
 Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
-[2024-06-22 21:30:41s] 00:01:07 n_iters: 379, epoch: 1, n_epoch_iters: 378/626 | all: 2.1518 feat: 0.2001 color: 0.5171 lm: 1.4149 reg: 0.0051 gamma: 0.0021 reflc: 0.0126 
-Traceback (most recent call last):
-  File "/home/joonp/1_Projects/Deep3DFaceRecon_pytorch_org/original/train.py", line 223, in <module>
-    main(0, world_size, train_opt)
-  File "/home/joonp/1_Projects/Deep3DFaceRecon_pytorch_org/original/train.py", line 201, in main
-    print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, train_opt.n_epochs, time.time() - epoch_start_time))
-NameError: name 'epoch_start_time' is not defined
+[2024-06-22 22:59:49s] 00:01:07 n_iters: 283, epoch: 1, n_epoch_iters: 282/626 | all: 2.1478 feat: 0.1957 color: 0.5730 lm: 1.3596 reg: 0.0047 gamma: 0.0013 reflc: 0.0134 
+[2024-06-22 23:00:49s] 00:02:07 n_iters: 574, epoch: 1, n_epoch_iters: 573/626 | all: 1.1823 feat: 0.2010 color: 0.4733 lm: 0.4882 reg: 0.0029 gamma: 0.0007 reflc: 0.0162 
+learning rate = 0.0001000
+[2024-06-22 23:01:49s] 00:03:07 n_iters: 858, epoch: 2, n_epoch_iters: 232/626 | all: 1.3801 feat: 0.1985 color: 0.4942 lm: 0.6684 reg: 0.0044 gamma: 0.0020 reflc: 0.0125 
+[2024-06-22 23:02:49s] 00:04:07 n_iters: 1149, epoch: 2, n_epoch_iters: 523/626 | all: 1.0523 feat: 0.1971 color: 0.3953 lm: 0.4408 reg: 0.0046 gamma: 0.0017 reflc: 0.0128 
+learning rate = 0.0001000
+[2024-06-22 23:03:49s] 00:05:07 n_iters: 1435, epoch: 3, n_epoch_iters: 184/626 | all: 1.0006 feat: 0.1960 color: 0.4138 lm: 0.3709 reg: 0.0035 gamma: 0.0017 reflc: 0.0146 
+[2024-06-22 23:04:49s] 00:06:08 n_iters: 1723, epoch: 3, n_epoch_iters: 472/626 | all: 1.4239 feat: 0.2032 color: 0.4364 lm: 0.7656 reg: 0.0030 gamma: 0.0012 reflc: 0.0145 
+learning rate = 0.0001000
+[2024-06-22 23:05:50s] 00:07:08 n_iters: 2008, epoch: 4, n_epoch_iters: 132/626 | all: 0.8769 feat: 0.1932 color: 0.4231 lm: 0.2416 reg: 0.0037 gamma: 0.0023 reflc: 0.0130 
+[2024-06-22 23:06:50s] 00:08:08 n_iters: 2301, epoch: 4, n_epoch_iters: 425/626 | all: 0.7878 feat: 0.1944 color: 0.3777 lm: 0.1960 reg: 0.0036 gamma: 0.0028 reflc: 0.0134 
+learning rate = 0.0001000
+[2024-06-22 23:07:50s] 00:09:08 n_iters: 2588, epoch: 5, n_epoch_iters: 87/626 | all: 0.8792 feat: 0.1985 color: 0.3879 lm: 0.2739 reg: 0.0035 gamma: 0.0021 reflc: 0.0135 
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 23:08:50s] 00:10:09 n_iters: 2872, epoch: 5, n_epoch_iters: 371/626 | all: 0.7773 feat: 0.1974 color: 0.3711 lm: 0.1892 reg: 0.0033 gamma: 0.0021 reflc: 0.0142 
+learning rate = 0.0001000
+[2024-06-22 23:09:51s] 00:11:09 n_iters: 3158, epoch: 6, n_epoch_iters: 32/626 | all: 0.7809 feat: 0.1918 color: 0.3848 lm: 0.1839 reg: 0.0032 gamma: 0.0020 reflc: 0.0153 
+[2024-06-22 23:10:51s] 00:12:09 n_iters: 3449, epoch: 6, n_epoch_iters: 323/626 | all: 0.7618 feat: 0.1933 color: 0.3557 lm: 0.1935 reg: 0.0037 gamma: 0.0021 reflc: 0.0134 
+[2024-06-22 23:11:51s] 00:13:09 n_iters: 3736, epoch: 6, n_epoch_iters: 610/626 | all: 0.7399 feat: 0.2011 color: 0.3337 lm: 0.1851 reg: 0.0036 gamma: 0.0019 reflc: 0.0144 
+learning rate = 0.0001000
+[2024-06-22 23:12:51s] 00:14:09 n_iters: 4022, epoch: 7, n_epoch_iters: 271/626 | all: 0.7192 feat: 0.1946 color: 0.3489 lm: 0.1551 reg: 0.0032 gamma: 0.0028 reflc: 0.0147 
+[2024-06-22 23:13:51s] 00:15:09 n_iters: 4306, epoch: 7, n_epoch_iters: 555/626 | all: 0.7397 feat: 0.1861 color: 0.3827 lm: 0.1500 reg: 0.0040 gamma: 0.0026 reflc: 0.0143 
+learning rate = 0.0001000
+[2024-06-22 23:14:51s] 00:16:09 n_iters: 4589, epoch: 8, n_epoch_iters: 213/626 | all: 0.8297 feat: 0.1941 color: 0.3664 lm: 0.2475 reg: 0.0037 gamma: 0.0032 reflc: 0.0148 
+[2024-06-22 23:15:51s] 00:17:09 n_iters: 4892, epoch: 8, n_epoch_iters: 516/626 | all: 0.7162 feat: 0.1992 color: 0.3226 lm: 0.1739 reg: 0.0039 gamma: 0.0022 reflc: 0.0143 
+learning rate = 0.0001000
+[2024-06-22 23:16:51s] 00:18:09 n_iters: 5175, epoch: 9, n_epoch_iters: 174/626 | all: 0.6709 feat: 0.1910 color: 0.3625 lm: 0.0968 reg: 0.0041 gamma: 0.0025 reflc: 0.0140 
+[2024-06-22 23:17:51s] 00:19:10 n_iters: 5467, epoch: 9, n_epoch_iters: 466/626 | all: 0.6815 feat: 0.2012 color: 0.3233 lm: 0.1357 reg: 0.0041 gamma: 0.0030 reflc: 0.0141 
+learning rate = 0.0001000
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e10_0000005738
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 23:18:52s] 00:20:10 n_iters: 5743, epoch: 10, n_epoch_iters: 117/626 | all: 0.7305 feat: 0.1926 color: 0.3261 lm: 0.1915 reg: 0.0038 gamma: 0.0019 reflc: 0.0147 
+[2024-06-22 23:19:52s] 00:21:10 n_iters: 6030, epoch: 10, n_epoch_iters: 404/626 | all: 0.6543 feat: 0.1923 color: 0.3212 lm: 0.1203 reg: 0.0039 gamma: 0.0022 reflc: 0.0145 
+learning rate = 0.0000200
+[2024-06-22 23:20:52s] 00:22:10 n_iters: 6311, epoch: 11, n_epoch_iters: 60/626 | all: 0.7327 feat: 0.1937 color: 0.3622 lm: 0.1561 reg: 0.0046 gamma: 0.0025 reflc: 0.0136 
+[2024-06-22 23:21:52s] 00:23:10 n_iters: 6600, epoch: 11, n_epoch_iters: 349/626 | all: 0.6488 feat: 0.1919 color: 0.3463 lm: 0.0882 reg: 0.0048 gamma: 0.0032 reflc: 0.0143 
+learning rate = 0.0000200
+[2024-06-22 23:22:52s] 00:24:10 n_iters: 6888, epoch: 12, n_epoch_iters: 12/626 | all: 0.6369 feat: 0.1960 color: 0.3300 lm: 0.0897 reg: 0.0049 gamma: 0.0029 reflc: 0.0135 
+[2024-06-22 23:23:52s] 00:25:10 n_iters: 7178, epoch: 12, n_epoch_iters: 302/626 | all: 0.7002 feat: 0.1975 color: 0.4060 lm: 0.0763 reg: 0.0047 gamma: 0.0021 reflc: 0.0136 
+[2024-06-22 23:24:52s] 00:26:10 n_iters: 7472, epoch: 12, n_epoch_iters: 596/626 | all: 0.5965 feat: 0.1930 color: 0.2938 lm: 0.0892 reg: 0.0041 gamma: 0.0020 reflc: 0.0143 
+learning rate = 0.0000200
+[2024-06-22 23:25:52s] 00:27:10 n_iters: 7768, epoch: 13, n_epoch_iters: 267/626 | all: 0.5987 feat: 0.1857 color: 0.3357 lm: 0.0558 reg: 0.0041 gamma: 0.0033 reflc: 0.0140 
+[2024-06-22 23:26:52s] 00:28:10 n_iters: 8057, epoch: 13, n_epoch_iters: 556/626 | all: 0.5937 feat: 0.1967 color: 0.3093 lm: 0.0673 reg: 0.0043 gamma: 0.0015 reflc: 0.0146 
+learning rate = 0.0000200
+[2024-06-22 23:27:52s] 00:29:10 n_iters: 8341, epoch: 14, n_epoch_iters: 215/626 | all: 0.6749 feat: 0.1913 color: 0.3428 lm: 0.1201 reg: 0.0046 gamma: 0.0018 reflc: 0.0143 
+  Caching test image[0]=00016.png
+  Caching test image[1]=00133.png
+  Caching test image[2]=00437.png
+  Caching test image[3]=00521.png
+  Caching test image[4]=20021.png
+  Caching test image[5]=32025.png
+  Caching test image[6]=41000.png
+  Caching test image[7]=41089.png
+  Caching test image[8]=41123.png
+  Caching test image[9]=41691.png
+  Caching test image[10]=41699.png
+Validation saved: val/epoch_14
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 23:28:52s] 00:30:10 n_iters: 8597, epoch: 14, n_epoch_iters: 471/626 | all: 0.7129 feat: 0.1930 color: 0.3192 lm: 0.1796 reg: 0.0045 gamma: 0.0029 reflc: 0.0137 
+learning rate = 0.0000200
+[2024-06-22 23:29:52s] 00:31:11 n_iters: 8886, epoch: 15, n_epoch_iters: 135/626 | all: 0.5989 feat: 0.1948 color: 0.2823 lm: 0.1005 reg: 0.0042 gamma: 0.0026 reflc: 0.0145 
+[2024-06-22 23:30:53s] 00:32:11 n_iters: 9177, epoch: 15, n_epoch_iters: 426/626 | all: 0.6136 feat: 0.1913 color: 0.3243 lm: 0.0767 reg: 0.0051 gamma: 0.0029 reflc: 0.0134 
+learning rate = 0.0000200
+[2024-06-22 23:31:53s] 00:33:11 n_iters: 9461, epoch: 16, n_epoch_iters: 85/626 | all: 0.6542 feat: 0.1984 color: 0.3303 lm: 0.1040 reg: 0.0042 gamma: 0.0029 reflc: 0.0143 
+[2024-06-22 23:32:53s] 00:34:11 n_iters: 9752, epoch: 16, n_epoch_iters: 376/626 | all: 0.6432 feat: 0.1993 color: 0.3441 lm: 0.0784 reg: 0.0044 gamma: 0.0025 reflc: 0.0146 
+learning rate = 0.0000200
+[2024-06-22 23:33:53s] 00:35:11 n_iters: 10036, epoch: 17, n_epoch_iters: 35/626 | all: 0.5495 feat: 0.1957 color: 0.2704 lm: 0.0629 reg: 0.0047 gamma: 0.0017 reflc: 0.0142 
+[2024-06-22 23:34:53s] 00:36:11 n_iters: 10326, epoch: 17, n_epoch_iters: 325/626 | all: 0.5846 feat: 0.1843 color: 0.2909 lm: 0.0875 reg: 0.0043 gamma: 0.0026 reflc: 0.0150 
+[2024-06-22 23:35:53s] 00:37:11 n_iters: 10621, epoch: 17, n_epoch_iters: 620/626 | all: 0.5618 feat: 0.1970 color: 0.2768 lm: 0.0672 reg: 0.0045 gamma: 0.0020 reflc: 0.0144 
+learning rate = 0.0000200
+[2024-06-22 23:36:53s] 00:38:11 n_iters: 10906, epoch: 18, n_epoch_iters: 280/626 | all: 0.6100 feat: 0.1956 color: 0.3385 lm: 0.0548 reg: 0.0043 gamma: 0.0023 reflc: 0.0145 
+[2024-06-22 23:37:53s] 00:39:12 n_iters: 11192, epoch: 18, n_epoch_iters: 566/626 | all: 0.5988 feat: 0.1928 color: 0.3206 lm: 0.0649 reg: 0.0040 gamma: 0.0024 reflc: 0.0141 
+learning rate = 0.0000200
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e19_0000011450
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 23:38:54s] 00:40:12 n_iters: 11464, epoch: 19, n_epoch_iters: 213/626 | all: 0.5697 feat: 0.1918 color: 0.3049 lm: 0.0513 reg: 0.0043 gamma: 0.0030 reflc: 0.0144 
+[2024-06-22 23:39:54s] 00:41:12 n_iters: 11755, epoch: 19, n_epoch_iters: 504/626 | all: 0.6381 feat: 0.1899 color: 0.3692 lm: 0.0575 reg: 0.0046 gamma: 0.0032 reflc: 0.0137 
+learning rate = 0.0000200
+[2024-06-22 23:40:54s] 00:42:12 n_iters: 12039, epoch: 20, n_epoch_iters: 163/626 | all: 0.5533 feat: 0.1920 color: 0.2876 lm: 0.0525 reg: 0.0043 gamma: 0.0024 reflc: 0.0144 
+[2024-06-22 23:41:54s] 00:43:12 n_iters: 12332, epoch: 20, n_epoch_iters: 456/626 | all: 0.5771 feat: 0.1965 color: 0.2982 lm: 0.0628 reg: 0.0043 gamma: 0.0017 reflc: 0.0137 
+learning rate = 0.0000040
+[2024-06-22 23:42:54s] 00:44:12 n_iters: 12619, epoch: 21, n_epoch_iters: 118/626 | all: 0.5711 feat: 0.1916 color: 0.2952 lm: 0.0635 reg: 0.0040 gamma: 0.0028 reflc: 0.0140 
+[2024-06-22 23:43:54s] 00:45:12 n_iters: 12908, epoch: 21, n_epoch_iters: 407/626 | all: 0.5655 feat: 0.1976 color: 0.2805 lm: 0.0662 reg: 0.0050 gamma: 0.0020 reflc: 0.0142 
+learning rate = 0.0000040
+[2024-06-22 23:44:54s] 00:46:12 n_iters: 13194, epoch: 22, n_epoch_iters: 68/626 | all: 0.5881 feat: 0.1902 color: 0.3223 lm: 0.0548 reg: 0.0046 gamma: 0.0021 reflc: 0.0141 
+[2024-06-22 23:45:54s] 00:47:13 n_iters: 13491, epoch: 22, n_epoch_iters: 365/626 | all: 0.5557 feat: 0.1968 color: 0.2814 lm: 0.0554 reg: 0.0044 gamma: 0.0030 reflc: 0.0147 
+learning rate = 0.0000040
+[2024-06-22 23:46:54s] 00:48:13 n_iters: 13773, epoch: 23, n_epoch_iters: 22/626 | all: 0.5622 feat: 0.1922 color: 0.2937 lm: 0.0554 reg: 0.0048 gamma: 0.0018 reflc: 0.0142 
+[2024-06-22 23:47:54s] 00:49:13 n_iters: 14063, epoch: 23, n_epoch_iters: 312/626 | all: 0.5646 feat: 0.1980 color: 0.2868 lm: 0.0591 reg: 0.0050 gamma: 0.0019 reflc: 0.0138 
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 23:48:55s] 00:50:13 n_iters: 14345, epoch: 23, n_epoch_iters: 594/626 | all: 0.6015 feat: 0.1959 color: 0.3087 lm: 0.0754 reg: 0.0049 gamma: 0.0033 reflc: 0.0133 
+learning rate = 0.0000040
+[2024-06-22 23:49:55s] 00:51:13 n_iters: 14632, epoch: 24, n_epoch_iters: 256/626 | all: 0.5495 feat: 0.1963 color: 0.2919 lm: 0.0412 reg: 0.0042 gamma: 0.0017 reflc: 0.0141 
+[2024-06-22 23:50:55s] 00:52:13 n_iters: 14921, epoch: 24, n_epoch_iters: 545/626 | all: 0.5694 feat: 0.1936 color: 0.2979 lm: 0.0572 reg: 0.0046 gamma: 0.0019 reflc: 0.0143 
+learning rate = 0.0000040
+[2024-06-22 23:51:55s] 00:53:13 n_iters: 15207, epoch: 25, n_epoch_iters: 206/626 | all: 0.5614 feat: 0.1931 color: 0.2734 lm: 0.0731 reg: 0.0045 gamma: 0.0034 reflc: 0.0140 
+[2024-06-22 23:52:55s] 00:54:13 n_iters: 15501, epoch: 25, n_epoch_iters: 500/626 | all: 0.5831 feat: 0.1862 color: 0.3279 lm: 0.0482 reg: 0.0046 gamma: 0.0022 reflc: 0.0140 
+learning rate = 0.0000040
+[2024-06-22 23:53:55s] 00:55:13 n_iters: 15788, epoch: 26, n_epoch_iters: 162/626 | all: 0.5571 feat: 0.1991 color: 0.2670 lm: 0.0691 reg: 0.0047 gamma: 0.0024 reflc: 0.0146 
+[2024-06-22 23:54:55s] 00:56:13 n_iters: 16077, epoch: 26, n_epoch_iters: 451/626 | all: 0.5565 feat: 0.1969 color: 0.2719 lm: 0.0668 reg: 0.0047 gamma: 0.0023 reflc: 0.0140 
+learning rate = 0.0000040
+[2024-06-22 23:55:55s] 00:57:14 n_iters: 16374, epoch: 27, n_epoch_iters: 123/626 | all: 0.5531 feat: 0.1929 color: 0.2824 lm: 0.0552 reg: 0.0048 gamma: 0.0039 reflc: 0.0138 
+[2024-06-22 23:56:55s] 00:58:14 n_iters: 16661, epoch: 27, n_epoch_iters: 410/626 | all: 0.5667 feat: 0.1930 color: 0.2877 lm: 0.0653 reg: 0.0047 gamma: 0.0017 reflc: 0.0144 
+learning rate = 0.0000040
+[2024-06-22 23:57:55s] 00:59:14 n_iters: 16949, epoch: 28, n_epoch_iters: 73/626 | all: 0.5187 feat: 0.1973 color: 0.2446 lm: 0.0563 reg: 0.0041 gamma: 0.0024 reflc: 0.0140 
+Validation saved: val/epoch_28
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e28_0000017205
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 23:58:56s] 01:00:14 n_iters: 17228, epoch: 28, n_epoch_iters: 352/626 | all: 0.5523 feat: 0.1923 color: 0.2759 lm: 0.0645 reg: 0.0039 gamma: 0.0019 reflc: 0.0139 
+learning rate = 0.0000040
+[2024-06-22 23:59:56s] 01:01:14 n_iters: 17512, epoch: 29, n_epoch_iters: 11/626 | all: 0.5881 feat: 0.1951 color: 0.3094 lm: 0.0639 reg: 0.0044 gamma: 0.0016 reflc: 0.0137 
+[2024-06-23 00:00:56s] 01:02:14 n_iters: 17805, epoch: 29, n_epoch_iters: 304/626 | all: 0.5197 feat: 0.1957 color: 0.2673 lm: 0.0360 reg: 0.0045 gamma: 0.0023 reflc: 0.0138 
+[2024-06-23 00:01:56s] 01:03:14 n_iters: 18101, epoch: 29, n_epoch_iters: 600/626 | all: 0.5922 feat: 0.1932 color: 0.3037 lm: 0.0742 reg: 0.0049 gamma: 0.0018 reflc: 0.0144 
+learning rate = 0.0000040
+[2024-06-23 00:02:56s] 01:04:14 n_iters: 18383, epoch: 30, n_epoch_iters: 257/626 | all: 0.5416 feat: 0.1942 color: 0.2762 lm: 0.0503 reg: 0.0046 gamma: 0.0020 reflc: 0.0143 
+[2024-06-23 00:03:56s] 01:05:14 n_iters: 18682, epoch: 30, n_epoch_iters: 556/626 | all: 0.5393 feat: 0.1936 color: 0.2724 lm: 0.0524 reg: 0.0045 gamma: 0.0023 reflc: 0.0140 
+learning rate = 0.0000008
+[2024-06-23 00:04:56s] 01:06:14 n_iters: 18972, epoch: 31, n_epoch_iters: 221/626 | all: 0.5115 feat: 0.1936 color: 0.2592 lm: 0.0388 reg: 0.0042 gamma: 0.0021 reflc: 0.0136 
+[2024-06-23 00:05:56s] 01:07:14 n_iters: 19267, epoch: 31, n_epoch_iters: 516/626 | all: 0.5644 feat: 0.1981 color: 0.2933 lm: 0.0507 reg: 0.0044 gamma: 0.0039 reflc: 0.0139 
+learning rate = 0.0000008
+[2024-06-23 00:06:56s] 01:08:14 n_iters: 19553, epoch: 32, n_epoch_iters: 177/626 | all: 0.6495 feat: 0.1912 color: 0.3461 lm: 0.0900 reg: 0.0049 gamma: 0.0027 reflc: 0.0147 
+[2024-06-23 00:07:56s] 01:09:14 n_iters: 19840, epoch: 32, n_epoch_iters: 464/626 | all: 0.5997 feat: 0.1969 color: 0.3144 lm: 0.0674 reg: 0.0043 gamma: 0.0026 reflc: 0.0141 
+learning rate = 0.0000008
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-23 00:08:56s] 01:10:14 n_iters: 20121, epoch: 33, n_epoch_iters: 120/626 | all: 0.5136 feat: 0.1995 color: 0.2515 lm: 0.0418 reg: 0.0046 gamma: 0.0021 reflc: 0.0143 
+[2024-06-23 00:09:56s] 01:11:15 n_iters: 20414, epoch: 33, n_epoch_iters: 413/626 | all: 0.5494 feat: 0.2004 color: 0.2778 lm: 0.0495 reg: 0.0048 gamma: 0.0030 reflc: 0.0139 
+learning rate = 0.0000008
+[2024-06-23 00:10:57s] 01:12:15 n_iters: 20701, epoch: 34, n_epoch_iters: 75/626 | all: 0.5691 feat: 0.2009 color: 0.2992 lm: 0.0486 reg: 0.0040 gamma: 0.0023 reflc: 0.0141 
+[2024-06-23 00:11:57s] 01:13:15 n_iters: 20992, epoch: 34, n_epoch_iters: 366/626 | all: 0.5379 feat: 0.1904 color: 0.2761 lm: 0.0496 reg: 0.0053 gamma: 0.0026 reflc: 0.0139 
+learning rate = 0.0000008
+[2024-06-23 00:12:57s] 01:14:15 n_iters: 21279, epoch: 35, n_epoch_iters: 28/626 | all: 0.5270 feat: 0.1965 color: 0.2625 lm: 0.0472 reg: 0.0044 gamma: 0.0024 reflc: 0.0140 
+[2024-06-23 00:13:57s] 01:15:15 n_iters: 21570, epoch: 35, n_epoch_iters: 319/626 | all: 0.5227 feat: 0.1959 color: 0.2732 lm: 0.0333 reg: 0.0044 gamma: 0.0024 reflc: 0.0135 
+[2024-06-23 00:14:57s] 01:16:15 n_iters: 21865, epoch: 35, n_epoch_iters: 614/626 | all: 0.5748 feat: 0.1945 color: 0.2903 lm: 0.0688 reg: 0.0044 gamma: 0.0027 reflc: 0.0140 
+learning rate = 0.0000008
+[2024-06-23 00:15:57s] 01:17:15 n_iters: 22154, epoch: 36, n_epoch_iters: 278/626 | all: 0.5868 feat: 0.1956 color: 0.3190 lm: 0.0511 reg: 0.0051 gamma: 0.0027 reflc: 0.0132 
+[2024-06-23 00:16:57s] 01:18:15 n_iters: 22443, epoch: 36, n_epoch_iters: 567/626 | all: 0.5617 feat: 0.1905 color: 0.3110 lm: 0.0394 reg: 0.0050 gamma: 0.0017 reflc: 0.0140 
+learning rate = 0.0000008
+[2024-06-23 00:17:57s] 01:19:15 n_iters: 22729, epoch: 37, n_epoch_iters: 228/626 | all: 0.6022 feat: 0.1934 color: 0.3409 lm: 0.0469 reg: 0.0042 gamma: 0.0025 reflc: 0.0142 
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e37_0000022984
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-23 00:18:57s] 01:20:15 n_iters: 23015, epoch: 37, n_epoch_iters: 514/626 | all: 0.6319 feat: 0.1928 color: 0.3124 lm: 0.1064 reg: 0.0045 gamma: 0.0018 reflc: 0.0140 
+learning rate = 0.0000008
+[2024-06-23 00:19:57s] 01:21:16 n_iters: 23301, epoch: 38, n_epoch_iters: 175/626 | all: 0.5781 feat: 0.1935 color: 0.2797 lm: 0.0839 reg: 0.0041 gamma: 0.0028 reflc: 0.0142 
+[2024-06-23 00:20:57s] 01:22:16 n_iters: 23589, epoch: 38, n_epoch_iters: 463/626 | all: 0.5646 feat: 0.1999 color: 0.2966 lm: 0.0477 reg: 0.0044 gamma: 0.0022 reflc: 0.0139 
+learning rate = 0.0000008
+[2024-06-23 00:21:58s] 01:23:16 n_iters: 23873, epoch: 39, n_epoch_iters: 122/626 | all: 0.5274 feat: 0.2002 color: 0.2695 lm: 0.0372 reg: 0.0047 gamma: 0.0022 reflc: 0.0136 
+[2024-06-23 00:22:58s] 01:24:16 n_iters: 24157, epoch: 39, n_epoch_iters: 406/626 | all: 0.5527 feat: 0.1963 color: 0.2696 lm: 0.0659 reg: 0.0049 gamma: 0.0021 reflc: 0.0140 
+learning rate = 0.0000008
+[2024-06-23 00:23:58s] 01:25:16 n_iters: 24442, epoch: 40, n_epoch_iters: 66/626 | all: 0.5695 feat: 0.1986 color: 0.2890 lm: 0.0610 reg: 0.0041 gamma: 0.0028 reflc: 0.0139 
+[2024-06-23 00:24:58s] 01:26:16 n_iters: 24737, epoch: 40, n_epoch_iters: 361/626 | all: 0.5809 feat: 0.1928 color: 0.3000 lm: 0.0670 reg: 0.0045 gamma: 0.0026 reflc: 0.0141 
+learning rate = 0.0000002
+[2024-06-23 00:25:58s] 01:27:16 n_iters: 25024, epoch: 41, n_epoch_iters: 23/626 | all: 0.6044 feat: 0.1865 color: 0.3343 lm: 0.0608 reg: 0.0046 gamma: 0.0039 reflc: 0.0142 
+[2024-06-23 00:26:58s] 01:28:16 n_iters: 25313, epoch: 41, n_epoch_iters: 312/626 | all: 0.5169 feat: 0.1862 color: 0.2619 lm: 0.0469 reg: 0.0048 gamma: 0.0029 reflc: 0.0140 
+[2024-06-23 00:27:58s] 01:29:16 n_iters: 25603, epoch: 41, n_epoch_iters: 602/626 | all: 0.5451 feat: 0.2000 color: 0.2674 lm: 0.0577 reg: 0.0043 gamma: 0.0017 reflc: 0.0140 
+learning rate = 0.0000002
+Validation saved: val/epoch_42
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-23 00:28:58s] 01:30:16 n_iters: 25879, epoch: 42, n_epoch_iters: 253/626 | all: 0.5336 feat: 0.1943 color: 0.2689 lm: 0.0500 reg: 0.0053 gamma: 0.0016 reflc: 0.0135 
+[2024-06-23 00:29:58s] 01:31:17 n_iters: 26170, epoch: 42, n_epoch_iters: 544/626 | all: 0.5751 feat: 0.1971 color: 0.2975 lm: 0.0594 reg: 0.0046 gamma: 0.0019 reflc: 0.0145 
+learning rate = 0.0000002
+[2024-06-23 00:30:59s] 01:32:17 n_iters: 26454, epoch: 43, n_epoch_iters: 203/626 | all: 0.5828 feat: 0.1902 color: 0.3187 lm: 0.0536 reg: 0.0041 gamma: 0.0020 reflc: 0.0143 
+[2024-06-23 00:31:59s] 01:33:17 n_iters: 26744, epoch: 43, n_epoch_iters: 493/626 | all: 0.6014 feat: 0.1959 color: 0.3109 lm: 0.0727 reg: 0.0049 gamma: 0.0029 reflc: 0.0139 
+learning rate = 0.0000002
+[2024-06-23 00:32:59s] 01:34:17 n_iters: 27027, epoch: 44, n_epoch_iters: 151/626 | all: 0.5851 feat: 0.1958 color: 0.3113 lm: 0.0567 reg: 0.0048 gamma: 0.0029 reflc: 0.0137 
+[2024-06-23 00:33:59s] 01:35:17 n_iters: 27313, epoch: 44, n_epoch_iters: 437/626 | all: 0.6180 feat: 0.2003 color: 0.3369 lm: 0.0591 reg: 0.0046 gamma: 0.0034 reflc: 0.0137 
+learning rate = 0.0000002
+[2024-06-23 00:34:59s] 01:36:17 n_iters: 27598, epoch: 45, n_epoch_iters: 97/626 | all: 0.5419 feat: 0.1969 color: 0.2758 lm: 0.0483 reg: 0.0045 gamma: 0.0026 reflc: 0.0138 
+[2024-06-23 00:35:59s] 01:37:17 n_iters: 27899, epoch: 45, n_epoch_iters: 398/626 | all: 0.4900 feat: 0.1862 color: 0.2453 lm: 0.0375 reg: 0.0046 gamma: 0.0021 reflc: 0.0144 
+learning rate = 0.0000002
+[2024-06-23 00:36:59s] 01:38:17 n_iters: 28181, epoch: 46, n_epoch_iters: 55/626 | all: 0.5332 feat: 0.1901 color: 0.2728 lm: 0.0497 reg: 0.0043 gamma: 0.0021 reflc: 0.0142 
+[2024-06-23 00:37:59s] 01:39:17 n_iters: 28471, epoch: 46, n_epoch_iters: 345/626 | all: 0.5026 feat: 0.1921 color: 0.2501 lm: 0.0402 reg: 0.0048 gamma: 0.0023 reflc: 0.0132 
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e46_0000028713
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+learning rate = 0.0000002
+[2024-06-23 00:39:00s] 01:40:18 n_iters: 28751, epoch: 47, n_epoch_iters: 0/626 | all: 0.5850 feat: 0.1920 color: 0.3093 lm: 0.0630 reg: 0.0044 gamma: 0.0023 reflc: 0.0141 
+[2024-06-23 00:40:00s] 01:41:18 n_iters: 29038, epoch: 47, n_epoch_iters: 287/626 | all: 0.5981 feat: 0.1924 color: 0.3295 lm: 0.0552 reg: 0.0045 gamma: 0.0023 reflc: 0.0142 
+[2024-06-23 00:41:00s] 01:42:18 n_iters: 29330, epoch: 47, n_epoch_iters: 579/626 | all: 0.5458 feat: 0.1834 color: 0.2870 lm: 0.0537 reg: 0.0048 gamma: 0.0030 reflc: 0.0140 
+learning rate = 0.0000002
+[2024-06-23 00:42:00s] 01:43:18 n_iters: 29617, epoch: 48, n_epoch_iters: 241/626 | all: 0.5499 feat: 0.1954 color: 0.2818 lm: 0.0504 reg: 0.0048 gamma: 0.0033 reflc: 0.0141 
+[2024-06-23 00:43:00s] 01:44:18 n_iters: 29911, epoch: 48, n_epoch_iters: 535/626 | all: 0.5855 feat: 0.1950 color: 0.3115 lm: 0.0582 reg: 0.0044 gamma: 0.0024 reflc: 0.0139 
+learning rate = 0.0000002
+[2024-06-23 00:44:00s] 01:45:19 n_iters: 30199, epoch: 49, n_epoch_iters: 198/626 | all: 0.5801 feat: 0.1948 color: 0.3133 lm: 0.0500 reg: 0.0049 gamma: 0.0030 reflc: 0.0141 
+[2024-06-23 00:45:01s] 01:46:19 n_iters: 30490, epoch: 49, n_epoch_iters: 489/626 | all: 0.5528 feat: 0.2020 color: 0.2831 lm: 0.0452 reg: 0.0049 gamma: 0.0036 reflc: 0.0140 
+learning rate = 0.0000002
+[2024-06-23 00:46:01s] 01:47:19 n_iters: 30786, epoch: 50, n_epoch_iters: 160/626 | all: 0.5512 feat: 0.1839 color: 0.2921 lm: 0.0544 reg: 0.0045 gamma: 0.0024 reflc: 0.0139 
+[2024-06-23 00:47:01s] 01:48:19 n_iters: 31084, epoch: 50, n_epoch_iters: 458/626 | all: 0.5732 feat: 0.1949 color: 0.2774 lm: 0.0806 reg: 0.0048 gamma: 0.0021 reflc: 0.0134 
+learning rate = 0.0000000
+[2024-06-23 00:48:01s] 01:49:19 n_iters: 31486, epoch: 51, n_epoch_iters: 235/626 | all: 0.5357 feat: 0.1917 color: 0.2789 lm: 0.0445 reg: 0.0048 gamma: 0.0020 reflc: 0.0138 
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+learning rate = 0.0000000
+[2024-06-23 00:49:01s] 01:50:19 n_iters: 31880, epoch: 52, n_epoch_iters: 4/626 | all: 0.5956 feat: 0.1951 color: 0.3176 lm: 0.0616 reg: 0.0049 gamma: 0.0023 reflc: 0.0141 
+[2024-06-23 00:50:01s] 01:51:19 n_iters: 32140, epoch: 52, n_epoch_iters: 264/626 | all: 0.5373 feat: 0.1918 color: 0.2878 lm: 0.0376 reg: 0.0043 gamma: 0.0018 reflc: 0.0140 
+[2024-06-23 00:51:01s] 01:52:19 n_iters: 32398, epoch: 52, n_epoch_iters: 522/626 | all: 0.5894 feat: 0.1981 color: 0.3068 lm: 0.0640 reg: 0.0044 gamma: 0.0023 reflc: 0.0137 
+learning rate = 0.0000000
+[2024-06-23 00:52:01s] 01:53:19 n_iters: 32657, epoch: 53, n_epoch_iters: 156/626 | all: 0.5558 feat: 0.1904 color: 0.2913 lm: 0.0544 reg: 0.0045 gamma: 0.0020 reflc: 0.0131 
+[2024-06-23 00:53:01s] 01:54:20 n_iters: 32911, epoch: 53, n_epoch_iters: 410/626 | all: 0.6250 feat: 0.1898 color: 0.3004 lm: 0.1140 reg: 0.0048 gamma: 0.0021 reflc: 0.0139 
+learning rate = 0.0000000
+[2024-06-23 00:54:02s] 01:55:20 n_iters: 33166, epoch: 54, n_epoch_iters: 40/626 | all: 0.5270 feat: 0.1842 color: 0.2799 lm: 0.0416 reg: 0.0044 gamma: 0.0029 reflc: 0.0141 
+[2024-06-23 00:55:02s] 01:56:20 n_iters: 33425, epoch: 54, n_epoch_iters: 299/626 | all: 0.5566 feat: 0.1994 color: 0.2856 lm: 0.0505 reg: 0.0043 gamma: 0.0025 reflc: 0.0144 
+[2024-06-23 00:56:02s] 01:57:20 n_iters: 33677, epoch: 54, n_epoch_iters: 551/626 | all: 0.5630 feat: 0.1912 color: 0.2990 lm: 0.0518 reg: 0.0051 gamma: 0.0025 reflc: 0.0135 
+learning rate = 0.0000000
+[2024-06-23 00:57:02s] 01:58:20 n_iters: 33931, epoch: 55, n_epoch_iters: 180/626 | all: 0.6180 feat: 0.1915 color: 0.3457 lm: 0.0599 reg: 0.0045 gamma: 0.0021 reflc: 0.0143 
+[2024-06-23 00:58:02s] 01:59:20 n_iters: 34192, epoch: 55, n_epoch_iters: 441/626 | all: 0.5294 feat: 0.2027 color: 0.2620 lm: 0.0443 reg: 0.0045 gamma: 0.0019 reflc: 0.0140 
+Validation saved: val/epoch_55
+learning rate = 0.0000000
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e56_0000034387
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-23 00:59:02s] 02:00:20 n_iters: 34438, epoch: 56, n_epoch_iters: 62/626 | all: 0.5567 feat: 0.2005 color: 0.2831 lm: 0.0533 reg: 0.0041 gamma: 0.0019 reflc: 0.0139 
+[2024-06-23 01:00:02s] 02:01:20 n_iters: 34696, epoch: 56, n_epoch_iters: 320/626 | all: 0.5640 feat: 0.1994 color: 0.3000 lm: 0.0435 reg: 0.0050 gamma: 0.0019 reflc: 0.0142 
+[2024-06-23 01:01:02s] 02:02:20 n_iters: 34957, epoch: 56, n_epoch_iters: 581/626 | all: 0.5482 feat: 0.1987 color: 0.2805 lm: 0.0478 reg: 0.0050 gamma: 0.0027 reflc: 0.0135 
+learning rate = 0.0000000
+[2024-06-23 01:02:03s] 02:03:21 n_iters: 35211, epoch: 57, n_epoch_iters: 210/626 | all: 0.5908 feat: 0.1980 color: 0.3096 lm: 0.0616 reg: 0.0042 gamma: 0.0029 reflc: 0.0146 
+[2024-06-23 01:03:03s] 02:04:21 n_iters: 35466, epoch: 57, n_epoch_iters: 465/626 | all: 0.5300 feat: 0.1921 color: 0.2569 lm: 0.0597 reg: 0.0047 gamma: 0.0028 reflc: 0.0137 
+learning rate = 0.0000000
+[2024-06-23 01:04:03s] 02:05:21 n_iters: 35721, epoch: 58, n_epoch_iters: 95/626 | all: 0.5209 feat: 0.1929 color: 0.2709 lm: 0.0360 reg: 0.0049 gamma: 0.0022 reflc: 0.0141 
+[2024-06-23 01:05:03s] 02:06:21 n_iters: 35987, epoch: 58, n_epoch_iters: 361/626 | all: 0.5450 feat: 0.1963 color: 0.2674 lm: 0.0602 reg: 0.0045 gamma: 0.0028 reflc: 0.0139 
+[2024-06-23 01:06:03s] 02:07:21 n_iters: 36246, epoch: 58, n_epoch_iters: 620/626 | all: 0.5793 feat: 0.1996 color: 0.2931 lm: 0.0671 reg: 0.0037 gamma: 0.0017 reflc: 0.0140 
+learning rate = 0.0000000
+[2024-06-23 01:07:03s] 02:08:21 n_iters: 36491, epoch: 59, n_epoch_iters: 240/626 | all: 0.5206 feat: 0.1966 color: 0.2378 lm: 0.0658 reg: 0.0048 gamma: 0.0021 reflc: 0.0136 
+[2024-06-23 01:08:03s] 02:09:21 n_iters: 36756, epoch: 59, n_epoch_iters: 505/626 | all: 0.5618 feat: 0.1951 color: 0.2870 lm: 0.0579 reg: 0.0053 gamma: 0.0021 reflc: 0.0144 
+learning rate = 0.0000000
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-23 01:09:03s] 02:10:21 n_iters: 37006, epoch: 60, n_epoch_iters: 130/626 | all: 0.5505 feat: 0.1958 color: 0.2751 lm: 0.0585 reg: 0.0051 gamma: 0.0021 reflc: 0.0139 
+[2024-06-23 01:10:03s] 02:11:21 n_iters: 37268, epoch: 60, n_epoch_iters: 392/626 | all: 0.5690 feat: 0.1903 color: 0.2981 lm: 0.0585 reg: 0.0050 gamma: 0.0028 reflc: 0.0144 
+learning rate = 0.0000000
+[2024-06-23 01:11:04s] 02:12:22 n_iters: 37524, epoch: 61, n_epoch_iters: 23/626 | all: 0.5692 feat: 0.1945 color: 0.3004 lm: 0.0542 reg: 0.0047 gamma: 0.0016 reflc: 0.0138 
+[2024-06-23 01:12:04s] 02:13:22 n_iters: 37785, epoch: 61, n_epoch_iters: 284/626 | all: 0.5013 feat: 0.1949 color: 0.2403 lm: 0.0444 reg: 0.0047 gamma: 0.0026 reflc: 0.0144 
+[2024-06-23 01:13:04s] 02:14:22 n_iters: 38039, epoch: 61, n_epoch_iters: 538/626 | all: 0.5567 feat: 0.2012 color: 0.2809 lm: 0.0536 reg: 0.0045 gamma: 0.0027 reflc: 0.0139 
+learning rate = 0.0000000
+[2024-06-23 01:14:04s] 02:15:22 n_iters: 38293, epoch: 62, n_epoch_iters: 167/626 | all: 0.5584 feat: 0.1947 color: 0.2959 lm: 0.0475 reg: 0.0043 gamma: 0.0018 reflc: 0.0141 
+[2024-06-23 01:15:04s] 02:16:22 n_iters: 38552, epoch: 62, n_epoch_iters: 426/626 | all: 0.5596 feat: 0.1931 color: 0.2868 lm: 0.0586 reg: 0.0047 gamma: 0.0020 reflc: 0.0143 
+learning rate = 0.0000000
+sh_train_subset.sh: line 28: 3113936 Killed                  python -W ignore train.py --flist 'datalist/ffhq7k_celeba3k/train/masks.txt' --flist_val 'datalist/ffhq7k_celeba3k/val/images.txt' --checkpoints_dir ../results/checkpointNetwork_$RECON_NETWORK_TYPE --net_recog_path '/home/joonp/1_Projects/gitlab/ngc/assets/checkpoints_BACKUP/recog_model/ms1mv3_arcface_r50_fp16/backbone.pth' --batch_size 16 --batch_size_val 16 --print_freq $PRINT_FREQ --display_freq $DISP_FREQ --display_overwrite_freq $DISP_OVERWRITE_FREQ --evaluation_freq $EVAL_FREQ --n_epochs $N_EPOCH --lr $LR
