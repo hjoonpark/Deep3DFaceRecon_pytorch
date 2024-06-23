@@ -162,7 +162,6 @@ class FaceReconModel(BaseModel):
         if self.opt.use_crop_face:
             face_mask, _, _ = self.renderer(self.pred_vertex, self.facemodel.front_face_buf)
         
-        face_mask = face_mask.detach()
         self.photo_loss_mask = self.atten_mask * face_mask
         self.loss_color = self.opt.w_color * self.comupte_color_loss(self.pred_face, self.input_img, self.photo_loss_mask)
         

@@ -1,0 +1,99 @@
+2024-06-22 21:29:34.264300: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-06-22 21:29:34.285651: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-06-22 21:29:34.947551: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+----------------- Options ---------------
+                add_image: True                          
+               batch_size: 16                            	[default: 32]
+           batch_size_val: 16                            	[default: 32]
+               bfm_folder: ./BFM                         
+                bfm_model: BFM_model_front.mat           
+                 camera_d: 10.0                          
+                   center: 112.0                         
+          checkpoints_dir: ../results/checkpointNetwork_ 	[default: ./checkpoints]
+           continue_train: False                         
+                data_root: ./                            
+             dataset_mode: flist                         
+                 ddp_port: 12355                         
+             display_freq: 1200                          	[default: 1000]
+   display_overwrite_freq: 600                           	[default: 1000]
+        display_per_batch: True                          
+                    epoch: latest                        
+              epoch_count: 1                             
+          eval_batch_nums: inf                           
+          evaluation_freq: 1800                          	[default: 5000]
+                    flist: datalist/ffhq7k_celeba3k/train/masks.txt	[default: datalist/train/masks.txt]
+                flist_val: datalist/ffhq7k_celeba3k/val/images.txt	[default: datalist/val/masks.txt]
+                    focal: 1015.0                        
+                  gpu_ids: 0                             
+                init_path: checkpoints/init_model/resnet50-0676ba61.pth
+                  isTrain: True                          	[default: None]
+                       lr: 0.0001                        
+          lr_decay_epochs: 10                            
+                lr_policy: step                          
+         max_dataset_size: inf                           
+                    model: facerecon                     
+                 n_epochs: 100000000000                  	[default: 20]
+                     name: face_recon                    
+                net_recog: r50                           
+           net_recog_path: /home/joonp/1_Projects/gitlab/ngc/assets/checkpoints_BACKUP/recog_model/ms1mv3_arcface_r50_fp16/backbone.pth	[default: checkpoints/recog_model/ms1mv3_arcface_r50_fp16/backbone.pth]
+                net_recon: resnet50                      
+              num_threads: 4                             
+                    phase: train                         
+               preprocess: shift_scale_rot_flip          
+          pretrained_name: None                          
+               print_freq: 60                            	[default: 100]
+                rot_angle: 10.0                          
+             save_by_iter: False                         
+          save_epoch_freq: 1                             
+         save_latest_freq: 5000                          
+              scale_delta: 0.1                           
+           serial_batches: False                         
+               shift_pixs: 10.0                          
+                   suffix:                               
+                  use_aug: True                          
+            use_crop_face: True                          
+                  use_ddp: False                         	[default: True]
+              use_last_fc: False                         
+               use_opengl: True                          
+             use_predef_M: False                         
+                  verbose: False                         
+           vis_batch_nums: 1                             
+                  w_color: 1.92                          
+                    w_exp: 0.8                           
+                   w_feat: 0.2                           
+                  w_gamma: 10.0                          
+                     w_id: 1.0                           
+                     w_lm: 0.0016                        
+                  w_reflc: 5.0                           
+                    w_reg: 0.0003                        
+                    w_tex: 0.017                         
+               world_size: 1                             
+                    z_far: 15.0                          
+                   z_near: 5.0                           
+----------------- End -------------------
+rank 0 train_masks.txt dataset [FlistDataset] was created
+Loading pretrained model from models/retinaface/retinaface_resnet50_2020-07-20_old_torch.pth
+remove prefix 'module.'
+  Missing pretrained-model keys:0
+  Unused pretrained-model checkpoint keys:0
+  Used pretrained-model keys:456
+loading pretrained net_recog r50 from /home/joonp/1_Projects/gitlab/ngc/assets/checkpoints_BACKUP/recog_model/ms1mv3_arcface_r50_fp16/backbone.pth
+model [FaceReconModel] was created
+The batch number of training images = 625
+,             the batch number of validation images = -1
+---------- Networks initialized -------------
+[Network net_recon] Total number of parameters : 24.035 M
+-----------------------------------------------
+n_train_imgs: 10,000 | batch_size: 16 | n_batches: 626 | total_iters: 62,600,000,000,000
+create opengl ctx on device cuda:0
+[2024-06-22 21:29:41s] 00:00:07 n_iters: 1, epoch: 1, n_epoch_iters: 0/626 | all: 2.8211 feat: 0.1954 color: 0.6326 lm: 1.9042 reg: 0.0000 gamma: 0.0000 reflc: 0.0889 
+Train saved: ../results/checkpointNetwork_/face_recon/results/train/e1_0000000001
+Train chkp saved: ../results/checkpointNetwork_/face_recon/results/train_chkp
+[2024-06-22 21:30:41s] 00:01:07 n_iters: 379, epoch: 1, n_epoch_iters: 378/626 | all: 2.1518 feat: 0.2001 color: 0.5171 lm: 1.4149 reg: 0.0051 gamma: 0.0021 reflc: 0.0126 
+Traceback (most recent call last):
+  File "/home/joonp/1_Projects/Deep3DFaceRecon_pytorch_org/original/train.py", line 223, in <module>
+    main(0, world_size, train_opt)
+  File "/home/joonp/1_Projects/Deep3DFaceRecon_pytorch_org/original/train.py", line 201, in main
+    print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, train_opt.n_epochs, time.time() - epoch_start_time))
+NameError: name 'epoch_start_time' is not defined
